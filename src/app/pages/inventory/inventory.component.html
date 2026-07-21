@@ -1,0 +1,62 @@
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+  
+  <div class="p-6 border-b border-slate-200 flex justify-between items-center bg-slate-50">
+    <h2 class="text-2xl font-bold text-slate-800">Αποθήκη & Προϊόντα</h2>
+    <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+      + Νέο Προϊόν
+    </button>
+  </div>
+
+  <div class="overflow-x-auto">
+    <table class="w-full text-left border-collapse">
+      <thead>
+        <tr class="bg-slate-100 text-slate-600 text-sm uppercase tracking-wider">
+          <th class="p-4 font-semibold">Προϊόν</th>
+          <th class="p-4 font-semibold text-right">Απόθεμα</th>
+          <th class="p-4 font-semibold text-right">Κόστος</th>
+          <th class="p-4 font-semibold text-right">Λιανική</th>
+          <th class="p-4 font-semibold text-center">Ενέργειες</th>
+        </tr>
+      </thead>
+      <tbody class="divide-y divide-slate-100">
+        @for (product of products(); track product.id) {
+          <tr class="hover:bg-slate-50 transition-colors">
+            
+            <!-- Name & Status -->
+            <td class="p-4">
+              <div class="font-medium text-slate-900">{{ product.name }}</div>
+              @if (product.stockQuantity <= product.minStockWarning) {
+                <span class="text-xs font-bold text-red-600 bg-red-100 px-2 py-1 rounded-md mt-1 inline-block">
+                  Χαμηλό Απόθεμα
+                </span>
+              }
+            </td>
+            
+            <!-- Stock Quantity -->
+            <td class="p-4 text-right font-bold text-lg" 
+                [ngClass]="product.stockQuantity <= product.minStockWarning ? 'text-red-600' : 'text-slate-700'">
+              {{ product.stockQuantity }}
+            </td>
+            
+            <!-- Prices -->
+            <td class="p-4 text-right text-slate-500">€{{ product.costPrice.toFixed(2) }}</td>
+            <td class="p-4 text-right text-slate-900 font-medium">€{{ product.price.toFixed(2) }}</td>
+            
+            <!-- Quick Receive Action -->
+            <td class="p-4 text-center">
+              <button 
+                (click)="receiveGoods(product)"
+                class="bg-emerald-100 hover:bg-emerald-200 text-emerald-700 px-3 py-2 rounded-lg text-sm font-bold transition-colors">
+                📦 Παραλαβή
+              </button>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="p-8 text-center text-slate-500">Δεν βρέθηκαν προϊόντα.</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

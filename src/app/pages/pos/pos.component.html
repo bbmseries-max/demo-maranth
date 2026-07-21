@@ -1,0 +1,104 @@
+<div class="flex flex-col md:flex-row gap-6 h-[calc(100vh-7rem)]">
+  
+ <!-- LEFT PANEL: Product Grid -->
+  <div class="flex-1 overflow-y-auto pr-2 flex flex-col">
+    
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-bold text-slate-800">Προϊόντα</h2>
+    </div>
+
+    <!-- Category Filters -->
+    <div class="flex gap-2 overflow-x-auto pb-3 mb-2 scrollbar-hide shrink-0">
+      @for (cat of categories(); track cat) {
+        <button 
+          (click)="selectedCategory.set(cat)"
+          class="px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all border"
+          [ngClass]="selectedCategory() === cat ? 'bg-slate-800 text-white border-slate-800 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50'">
+          {{ cat }}
+        </button>
+      }
+    </div>
+    
+    <!-- Product Grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
+      <!-- NOTE: We changed pinnedProducts() to filteredProducts() here! -->
+      @for (product of filteredProducts(); track product.id) {
+        <button 
+          (click)="addToCart(product)"
+          class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all active:scale-95 flex flex-col items-center text-center h-32 justify-center">
+          <span class="font-semibold text-slate-800 text-lg leading-tight">{{ product.name }}</span>
+          <span class="text-blue-600 font-bold mt-2">€{{ product.price.toFixed(2) }}</span>
+        </button>
+      } @empty {
+        <div class="col-span-full p-8 text-center text-slate-500 bg-white rounded-xl border border-dashed border-slate-300">
+          Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία.
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL: The Cart (Καλάθι) -->
+  <div class="w-full md:w-96 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[50vh] md:h-full overflow-hidden shrink-0">
+    
+    <!-- Cart Header -->
+    <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
+      <h2 class="text-lg font-bold">Καλάθι</h2>
+      <button (click)="clearCart()" class="text-slate-300 hover:text-white text-sm underline">
+        Καθαρισμός
+      </button>
+    </div>
+
+    <!-- Cart Items List -->
+    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
+      @for (item of cart(); track item.product.id) {
+        <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 shadow-sm">
+          <div class="flex-1">
+            <div class="font-medium text-slate-800">{{ item.product.name }}</div>
+            <div class="text-sm text-slate-500">€{{ (item.product.price * item.quantity).toFixed(2) }}</div>
+          </div>
+          
+          <!-- + / - Controls -->
+          <div class="flex items-center gap-2 bg-slate-50 rounded-lg p-1 border border-slate-200">
+            <button (click)="decreaseQty(item.product.id)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-md font-bold text-lg">-</button>
+            <span class="w-6 text-center font-bold text-slate-800">{{ item.quantity }}</span>
+            <button (click)="increaseQty(item.product.id)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-md font-bold text-lg">+</button>
+          </div>
+        </div>
+      } @empty {
+        <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-2">
+          <p>Το καλάθι είναι άδειο</p>
+        </div>
+      }
+    </div>
+
+   <!-- Checkout Footer -->
+    <div class="p-4 bg-white border-t border-slate-200">
+      <div class="flex justify-between items-center mb-4 text-xl">
+        <span class="font-bold text-slate-700">Σύνολο:</span>
+        <span class="font-extrabold text-blue-700">€{{ cartTotal().toFixed(2) }}</span>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-3">
+        <!-- Cash Button -->
+        <button 
+          (click)="checkout('Cash')"
+          [disabled]="cart().length === 0"
+          class="w-full py-4 rounded-xl text-lg font-bold transition-all flex flex-col items-center justify-center gap-1"
+          [ngClass]="cart().length === 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md active:scale-95'">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
+          Μετρητά
+        </button>
+        
+        <!-- Card Button -->
+        <button 
+          (click)="checkout('Card')"
+          [disabled]="cart().length === 0"
+          class="w-full py-4 rounded-xl text-lg font-bold transition-all flex flex-col items-center justify-center gap-1"
+          [ngClass]="cart().length === 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md active:scale-95'">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          Κάρτα
+        </button>
+      </div>
+    </div>
+
+</div>
