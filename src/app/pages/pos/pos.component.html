@@ -1,104 +1,319 @@
-<div class="flex flex-col md:flex-row gap-6 h-[calc(100vh-7rem)]">
+<div class="p-6 md:p-10 min-h-screen bg-base flex flex-col">
   
- <!-- LEFT PANEL: Product Grid -->
-  <div class="flex-1 overflow-y-auto pr-2 flex flex-col">
+  <!-- Main POS Grid (3 Columns on Desktop) -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start flex-1">
     
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-xl font-bold text-slate-800">Προϊόντα</h2>
+    <!-- ========================================== -->
+    <!-- LEFT SIDE: Scanner & Products (2 Columns)  -->
+    <!-- ========================================== -->
+    <div class="lg:col-span-2 flex flex-col gap-6">
+      
+      <!-- Scanner Input -->
+      <div class="relative">
+        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          <svg class="w-6 h-6 text-main/50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm14 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+        </div>
+        <input #scannerInput (keyup.enter)="handleScan(scannerInput)" autofocus type="text" placeholder="Scan barcode..." class="w-full bg-surface border-2 border-theme-border text-main rounded-2xl pl-12 pr-4 py-4 text-lg font-bold focus:outline-none focus:border-brand transition-colors shadow-sm">
+      </div>
+
+      <!-- Category Tabs -->
+      <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+        @for (category of categories; track category) {
+          <button (click)="setCategory(category)" 
+                  [class.bg-brand]="activeCategory() === category" 
+                  [class.text-white]="activeCategory() === category"
+                  [class.border-transparent]="activeCategory() === category"
+                  [class.bg-surface]="activeCategory() !== category"
+                  [class.text-main]="activeCategory() !== category"
+                  [class.border-theme-border]="activeCategory() !== category"
+                  class="px-6 py-3 rounded-xl font-bold whitespace-nowrap border hover:border-brand/50 transition-all">
+            {{ category }}
+          </button>
+        }
+      </div>
+
+      <!-- Product Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        @for (product of filteredProducts(); track product.id) {
+          <button (click)="addToCart(product)" class="bg-surface border border-theme-border p-4 rounded-2xl flex flex-col items-center text-center hover:border-brand hover:shadow-md active:scale-95 transition-all group">
+            <div class="w-16 h-16 bg-base rounded-full flex items-center justify-center text-3xl mb-3 shadow-inner group-hover:scale-110 transition-transform">
+              {{ product.icon }}
+            </div>
+            <span class="font-bold text-main line-clamp-1 w-full">{{ product.name }}</span>
+            <span class="text-brand font-black mt-1">{{ product.price | currency:'EUR' }}</span>
+          </button>
+        }
+      </div>
+      
     </div>
 
-    <!-- Category Filters -->
-    <div class="flex gap-2 overflow-x-auto pb-3 mb-2 scrollbar-hide shrink-0">
-      @for (cat of categories(); track cat) {
-        <button 
-          (click)="selectedCategory.set(cat)"
-          class="px-5 py-2 rounded-full font-bold text-sm whitespace-nowrap transition-all border"
-          [ngClass]="selectedCategory() === cat ? 'bg-slate-800 text-white border-slate-800 shadow-md' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50'">
-          {{ cat }}
+    <!-- ========================================== -->
+    <!-- RIGHT SIDE: The Basket (Takes 1 Column)    -->
+    <!-- ========================================== -->
+    <div class="lg:col-span-1 bg-surface border border-theme-border rounded-3xl p-6 shadow-sm flex flex-col h-[calc(100vh-5rem)] sticky top-6">
+      
+      <h2 class="text-2xl font-black text-main tracking-tight mb-6">Current Order</h2>
+      
+      <!-- Cart Items Loop -->
+      <div class="flex-1 overflow-y-auto pr-2 space-y-4 scrollbar-hide">
+        @if (cart().length === 0) {
+          <div class="h-full flex flex-col items-center justify-center text-main/40 space-y-4">
+            <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <p class="font-bold">Scan items to start</p>
+          </div>
+        } @else {
+          @for (item of cart(); track item.product.id) {
+            <div class="flex items-center justify-between p-3 bg-base border border-theme-border rounded-2xl">
+               <div class="flex flex-col">
+                 <span class="font-bold text-main">{{ item.product.name }}</span>
+                 <span class="text-brand font-bold text-sm">{{ item.product.price | currency:'EUR' }}</span>
+               </div>
+               <!-- Quantity controls -->
+               <div class="flex items-center gap-3 bg-surface border border-theme-border rounded-xl p-1">
+                 <button (click)="decreaseQuantity(item.product.id)" class="w-8 h-8 flex items-center justify-center text-main hover:bg-base rounded-lg transition-colors">-</button>
+                 <span class="font-bold text-main w-4 text-center">{{ item.quantity }}</span>
+                 <button (click)="addToCart(item.product)" class="w-8 h-8 flex items-center justify-center text-main hover:bg-base rounded-lg transition-colors">+</button>
+               </div>
+            </div>
+          }
+        }
+      </div>
+
+      <!-- Action Utility Buttons -->
+      <div class="grid grid-cols-3 gap-3 pt-4 border-t border-theme-border mt-4 mb-4">
+        
+        <!-- Clear Cart -->
+        <button (click)="clearCart()" [disabled]="cart().length === 0" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs font-bold gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+          Clear
         </button>
-      }
-    </div>
-    
-    <!-- Product Grid -->
-    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
-      <!-- NOTE: We changed pinnedProducts() to filteredProducts() here! -->
-      @for (product of filteredProducts(); track product.id) {
-        <button 
-          (click)="addToCart(product)"
-          class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 hover:border-blue-500 hover:shadow-md transition-all active:scale-95 flex flex-col items-center text-center h-32 justify-center">
-          <span class="font-semibold text-slate-800 text-lg leading-tight">{{ product.name }}</span>
-          <span class="text-blue-600 font-bold mt-2">€{{ product.price.toFixed(2) }}</span>
+        
+        <!-- Suspend Order -->
+        <button (click)="suspendOrder()" [disabled]="cart().length === 0" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs font-bold gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Suspend
         </button>
-      } @empty {
-        <div class="col-span-full p-8 text-center text-slate-500 bg-white rounded-xl border border-dashed border-slate-300">
-          Δεν βρέθηκαν προϊόντα σε αυτή την κατηγορία.
+        
+        <!-- Refund -->
+        <button (click)="triggerRefund()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl bg-purple-500/10 text-purple-500 hover:bg-purple-500 hover:text-white transition-colors text-xs font-bold gap-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"></path></svg>
+          Refund
+        </button>
+      </div>
+
+      <!-- Suspended Orders Queue -->
+      @if (suspendedOrders().length > 0) {
+        <div class="mb-4 flex flex-col gap-2">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="w-2 h-2 rounded-full bg-yellow-500 animate-pulse"></span>
+            <span class="text-xs font-bold text-main/50 uppercase tracking-wider">Orders on Hold</span>
+          </div>
+          
+          @for (order of suspendedOrders(); track order.id) {
+            <button type="button" (click)="recallOrder(order.id); $event.stopPropagation()" class="flex justify-between items-center p-3 bg-yellow-500/10 border border-yellow-500/30 rounded-xl text-yellow-600 hover:bg-yellow-500 hover:text-white transition-colors group">
+              <div class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <span class="font-bold tracking-wide">Order {{ order.id }}</span>
+              </div>
+              <span class="font-black">{{ order.total | currency:'EUR' }}</span>
+            </button>
+          }
         </div>
       }
+
+      <!-- Checkout Footer -->
+      <div class="pt-4 border-t border-theme-border mt-auto">
+        <div class="flex justify-between text-main/60 mb-2 font-bold">
+          <span>Subtotal</span>
+          <span>{{ subtotal() | currency:'EUR' }}</span>
+        </div>
+        <div class="flex justify-between text-main/60 mb-4 font-bold">
+          <span>Tax (24%)</span>
+          <span>{{ tax() | currency:'EUR' }}</span>
+        </div>
+        <div class="flex justify-between text-2xl font-black text-main mb-6">
+          <span>Total</span>
+          <span>{{ total() | currency:'EUR' }}</span>
+        </div>
+        
+        <div class="grid grid-cols-3 gap-3">
+          
+          <!-- Cash (Μετρητά) -->
+          <button (click)="checkout('cash')" [disabled]="cart().length === 0" class="bg-green-500 disabled:bg-green-500/50 disabled:cursor-not-allowed text-white py-3 rounded-2xl font-black shadow-lg hover:opacity-90 active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Μετρητά
+          </button>
+          
+          <!-- Card (Κάρτα) -->
+          <button (click)="checkout('card')" [disabled]="cart().length === 0" class="bg-blue-500 disabled:bg-blue-500/50 disabled:cursor-not-allowed text-white py-3 rounded-2xl font-black shadow-lg hover:opacity-90 active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            Κάρτα
+          </button>
+
+          <!-- Debt (Χρέος) -->
+          <button (click)="checkout('debt')" [disabled]="cart().length === 0" class="bg-orange-500 disabled:bg-orange-500/50 disabled:cursor-not-allowed text-white py-3 rounded-2xl font-black shadow-lg hover:opacity-90 active:scale-95 transition-all flex flex-col items-center justify-center gap-1">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Χρέος
+          </button>
+          
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL: The Cart (Καλάθι) -->
-  <div class="w-full md:w-96 bg-white rounded-2xl shadow-sm border border-slate-200 flex flex-col h-[50vh] md:h-full overflow-hidden shrink-0">
+ <!-- ========================================== -->
+  <!-- SERVICES PITCH SECTION (With Navigation)   -->
+  <!-- ========================================== -->
+  <div class="mt-20 w-full max-w-7xl mx-auto pb-12">
     
-    <!-- Cart Header -->
-    <div class="p-4 bg-slate-800 text-white flex justify-between items-center">
-      <h2 class="text-lg font-bold">Καλάθι</h2>
-      <button (click)="clearCart()" class="text-slate-300 hover:text-white text-sm underline">
-        Καθαρισμός
+    <!-- Section Header -->
+    <div class="text-center mb-12">
+      <h2 class="text-3xl md:text-4xl font-black text-main tracking-tight mb-4">
+        Επαγγελματικές Λύσεις Λιανικής Πώλησης
+      </h2>
+      <p class="text-lg text-main/60 max-w-2xl mx-auto font-medium">
+        Όλα όσα χρειάζεται η επιχείρησή σας σε ένα ολοκληρωμένο, cloud-native οικοσύστημα.
+      </p>
+    </div>
+
+    <!-- Services Grid (Clickable Cards) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      
+      <!-- Feature 1: POS & Thermal Printing / Drawer Trigger -->
+      <div (click)="navigateTo('/settings')" 
+           class="bg-surface border border-theme-border rounded-3xl p-6 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl hover:border-brand group cursor-pointer">
+        <div class="w-14 h-14 rounded-2xl bg-brand/10 text-brand flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <!-- Printer / Cash Drawer Icon -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H7a2 2 0 00-2 2v4h10z"></path></svg>
+        </div>
+        <h3 class="text-xl font-black text-main mb-3 group-hover:text-brand transition-colors duration-300">Εκτυπώσεις & Συρτάρι</h3>
+        <p class="text-main/70 text-sm leading-relaxed font-medium">
+          Άμεσος έλεγχος θερμικού εκτυπωτή και αυτόματο άνοιγμα συρταριού ταμείου (cash drawer) σε κάθε ολοκλήρωση συναλλαγής.
+        </p>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-brand mt-4">Ρυθμίσεις →</span>
+      </div>
+
+      <!-- Feature 2: Loyalty & Customer Points -->
+      <div (click)="navigateTo('/costumers')" 
+           class="bg-surface border border-theme-border rounded-3xl p-6 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl hover:border-blue-500 group cursor-pointer">
+        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <!-- Loyalty Points / Star Icon -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path></svg>
+        </div>
+        <h3 class="text-xl font-black text-main mb-3 group-hover:text-blue-500 transition-colors duration-300">Πελάτες & Πόντοι (Loyalty)</h3>
+        <p class="text-main/70 text-sm leading-relaxed font-medium">
+          Προφίλ πελατών, διαχείριση υπολοίπων (χρέος) και σύστημα επιβράβευσης με συλλογή και εξαργύρωση πόντων.
+        </p>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-blue-500 mt-4">Πελατολόγιο →</span>
+      </div>
+
+      <!-- Feature 3: Smart Inventory Management -->
+      <div (click)="navigateTo('/inventory')" 
+           class="bg-surface border border-theme-border rounded-3xl p-6 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl hover:border-green-500 group cursor-pointer">
+        <div class="w-14 h-14 rounded-2xl bg-green-500/10 text-green-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <!-- Box Icon -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path></svg>
+        </div>
+        <h3 class="text-xl font-black text-main mb-3 group-hover:text-green-500 transition-colors duration-300">Έξυπνο Απόθεμα</h3>
+        <p class="text-main/70 text-sm leading-relaxed font-medium">
+          Διαχείριση προϊόντων, κατηγοριών, προμηθευτών (Εταιρείες) και αυτόματες ειδοποιήσεις για ημερομηνίες λήξης.
+        </p>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-green-500 mt-4">Αποθήκη →</span>
+      </div>
+
+      <!-- Feature 4: Analytics & Real-Time Dashboard -->
+      <div (click)="navigateTo('/dashboard')" 
+           class="bg-surface border border-theme-border rounded-3xl p-6 transition-all duration-300 ease-out hover:-translate-y-2 hover:shadow-2xl hover:border-purple-500 group cursor-pointer">
+        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+          <!-- Chart Icon -->
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        </div>
+        <h3 class="text-xl font-black text-main mb-3 group-hover:text-purple-500 transition-colors duration-300">Προηγμένα Analytics</h3>
+        <p class="text-main/70 text-sm leading-relaxed font-medium">
+          Ζωντανά στατιστικά πωλήσεων, αναφορά Z, κέρδος ανά κατηγορία και ανάλυση κίνησης ανά ώρα.
+        </p>
+        <span class="inline-flex items-center gap-1 text-xs font-bold text-purple-500 mt-4">Dashboard →</span>
+      </div>
+
+    </div>
+  </div>
+  <!-- ========================================== -->
+  <!-- FOOTER LEGAL PAPERS & COMPLIANCE BAR       -->
+  <!-- ========================================== -->
+  <footer class="mt-12 pt-6 border-t border-theme-border flex flex-col md:flex-row items-center justify-between text-xs text-main/50 gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500"></span>
+      <span class="font-bold">Maranth POS v1.0 • Internal Management Edition</span>
+    </div>
+
+    <!-- Legal Document Links -->
+    <div class="flex items-center gap-6 font-bold">
+      <button (click)="openDisclaimer()" class="hover:text-brand underline decoration-dotted transition-colors flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        Όροι Παροχής & Φορολογική Δήλωση
+      </button>
+
+      <button (click)="openGdpr()" class="hover:text-brand underline decoration-dotted transition-colors flex items-center gap-1">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
+        Πολιτική GDPR & Δεδομένων
       </button>
     </div>
+  </footer>
 
-    <!-- Cart Items List -->
-    <div class="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
-      @for (item of cart(); track item.product.id) {
-        <div class="flex justify-between items-center p-3 bg-white rounded-lg border border-slate-100 shadow-sm">
-          <div class="flex-1">
-            <div class="font-medium text-slate-800">{{ item.product.name }}</div>
-            <div class="text-sm text-slate-500">€{{ (item.product.price * item.quantity).toFixed(2) }}</div>
-          </div>
-          
-          <!-- + / - Controls -->
-          <div class="flex items-center gap-2 bg-slate-50 rounded-lg p-1 border border-slate-200">
-            <button (click)="decreaseQty(item.product.id)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-md font-bold text-lg">-</button>
-            <span class="w-6 text-center font-bold text-slate-800">{{ item.quantity }}</span>
-            <button (click)="increaseQty(item.product.id)" class="w-8 h-8 flex items-center justify-center text-slate-600 hover:bg-slate-200 rounded-md font-bold text-lg">+</button>
-          </div>
+  <!-- DISCLAIMER MODAL -->
+  @if (isDisclaimerModalOpen()) {
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-surface border border-theme-border w-full max-w-xl rounded-3xl p-6 shadow-2xl flex flex-col gap-4 text-main">
+        <div class="flex justify-between items-center border-b border-theme-border pb-3">
+          <h3 class="font-black text-lg flex items-center gap-2">
+            🛡️ Όροι Παροχής & Φορολογική Δήλωση
+          </h3>
+          <button (click)="closeDisclaimer()" class="text-main/50 hover:text-main font-bold">✕</button>
         </div>
-      } @empty {
-        <div class="h-full flex flex-col items-center justify-center text-slate-400 space-y-2">
-          <p>Το καλάθι είναι άδειο</p>
-        </div>
-      }
-    </div>
-
-   <!-- Checkout Footer -->
-    <div class="p-4 bg-white border-t border-slate-200">
-      <div class="flex justify-between items-center mb-4 text-xl">
-        <span class="font-bold text-slate-700">Σύνολο:</span>
-        <span class="font-extrabold text-blue-700">€{{ cartTotal().toFixed(2) }}</span>
-      </div>
-      
-      <div class="grid grid-cols-2 gap-3">
-        <!-- Cash Button -->
-        <button 
-          (click)="checkout('Cash')"
-          [disabled]="cart().length === 0"
-          class="w-full py-4 rounded-xl text-lg font-bold transition-all flex flex-col items-center justify-center gap-1"
-          [ngClass]="cart().length === 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-emerald-500 hover:bg-emerald-600 text-white shadow-md active:scale-95'">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2z"></path></svg>
-          Μετρητά
-        </button>
         
-        <!-- Card Button -->
-        <button 
-          (click)="checkout('Card')"
-          [disabled]="cart().length === 0"
-          class="w-full py-4 rounded-xl text-lg font-bold transition-all flex flex-col items-center justify-center gap-1"
-          [ngClass]="cart().length === 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md active:scale-95'">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-          Κάρτα
-        </button>
+        <div class="text-sm leading-relaxed space-y-3 font-medium text-main/80 bg-base p-4 rounded-2xl border border-theme-border">
+          <p class="font-bold text-main">Όροι Παροχής Λογισμικού (Software License Disclaimer):</p>
+          <p>
+            Το παρόν λογισμικό (Maranth POS / Inventory) παρέχεται αποκλειστικά για σκοπούς εσωτερικής εμπορικής διαχείρισης, παρακολούθησης αποθεμάτων, προμηθευτών και στατιστικών αναλύσεων. 
+          </p>
+          <p class="font-bold text-brand">
+            Δεν αποτελεί εγκεκριμένο Φορολογικό Ηλεκτρονικό Μηχανισμό (ΦΗΜ) ή Πάροχο Ηλεκτρονικής Τιμολόγησης (ΥΠΑΗΕΣ).
+          </p>
+          <p>
+            Ο Πελάτης φέρει την αποκλειστική ευθύνη για τη νόμιμη έκδοση και διαβίβαση των φορολογικών παραστατικών (αποδείξεων λιανικής) στην πλατφόρμα myDATA της ΑΑΔΕ μέσω της δικής του εγκεκριμένης ταμειακής μηχανής.
+          </p>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button (click)="closeDisclaimer()" class="px-5 py-2 rounded-xl bg-brand text-white font-bold">Κατάλαβα</button>
+        </div>
       </div>
     </div>
+  }
+
+  <!-- GDPR MODAL -->
+  @if (isGdprModalOpen()) {
+    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+      <div class="bg-surface border border-theme-border w-full max-w-xl rounded-3xl p-6 shadow-2xl flex flex-col gap-4 text-main">
+        <div class="flex justify-between items-center border-b border-theme-border pb-3">
+          <h3 class="font-black text-lg flex items-center gap-2">
+            🔒 Σύμβαση Επεξεργασίας Δεδομένων (GDPR)
+          </h3>
+          <button (click)="closeGdpr()" class="text-main/50 hover:text-main font-bold">✕</button>
+        </div>
+        
+        <div class="text-sm leading-relaxed space-y-3 font-medium text-main/80 bg-base p-4 rounded-2xl border border-theme-border">
+          <p><strong>1. Ρόλοι:</strong> Ο Πελάτης ενεργεί ως Υπεύθυνος Επεξεργασίας και η Εταιρεία ως Εκτελών την Επεξεργασία (Άρθρο 28 GDPR).</p>
+          <p><strong>2. Ασφάλεια:</strong> Όλα τα δεδομένα αποθηκεύονται με ασφάλεια σε διακομιστές εντός της Ευρωπαϊκής Ένωσης.</p>
+          <p><strong>3. Δικαιώματα:</strong> Παρέχεται η δυνατότητα εξαγωγής (Export) ή διαγραφής (Purge) των τοπικών δεδομένων ανά πάσα στιγμή.</p>
+        </div>
+
+        <div class="flex justify-end pt-2">
+          <button (click)="closeGdpr()" class="px-5 py-2 rounded-xl bg-brand text-white font-bold">Κλείσιμο</button>
+        </div>
+      </div>
+    </div>
+  }
+
 
 </div>

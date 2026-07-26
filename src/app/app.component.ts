@@ -1,12 +1,22 @@
-import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive], // ⭐ Critical for navigation
+  imports: [CommonModule, RouterModule],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  title = 'maranth-demo';
+  // Tracks the state of the mobile hamburger menu
+  public isMobileMenuOpen = signal(false);
+
+  public toggleMenu() {
+    this.isMobileMenuOpen.update(val => !val);
+  }
+
+  public closeMenu() {
+    this.isMobileMenuOpen.set(false);
+  }
 }

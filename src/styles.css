@@ -1,8 +1,42 @@
 /* You can add global styles to this file, and also import other style files */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
 
-body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+@layer base {
+  /* Default / Light Theme */
+  :root, [data-theme="light"] {
+    --color-bg-base: 248 250 252;     /* slate-50 */
+    --color-bg-surface: 255 255 255;  /* white */
+    --color-text-main: 30 41 59;      /* slate-800 */
+    --color-brand: 37 99 235;         /* blue-600 */
+    --color-border: 226 232 240;      /* slate-200 */
+  }
+
+  /* Dark Theme */
+  [data-theme="dark"] {
+    /* Deep, soft dark blue/grey for the main background */
+    --color-bg-base: 15 23 42;     
+    
+    /* Slightly lighter dark blue for the cards and cart */
+    --color-bg-surface: 30 41 59;  
+    
+    /* Crisp white text for perfect readability */
+    --color-text-main: 248 250 252;
+    
+    /* A vibrant, electric blue for the checkout buttons so they pop */
+    --color-brand: 59 130 246;     
+    
+    /* Soft, dark dividers so the borders aren't harsh */
+    --color-border: 51 65 85;
+  }
+
+  /* Warm / Coffee Shop Theme */
+  [data-theme="coffee"] {
+    --color-bg-base: 245 240 235;     /* warm beige */
+    --color-bg-surface: 255 255 255;  /* white */
+    --color-text-main: 67 40 24;      /* deep brown */
+    --color-brand: 212 163 115;       /* caramel */
+    --color-border: 230 220 210;
+  }
 }

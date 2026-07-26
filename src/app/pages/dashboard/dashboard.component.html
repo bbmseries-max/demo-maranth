@@ -1,129 +1,212 @@
-<div class="space-y-6">
+<div class="p-6 md:p-10 min-h-screen bg-base flex flex-col gap-8">
   
-  <!-- Header & Tabs -->
-  <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row justify-between items-center gap-4">
-    <h2 class="text-2xl font-bold text-slate-800">Reports & Analytics</h2>
-    <div class="flex bg-slate-100 p-1 rounded-lg">
+  <!-- Header & Tab Navigation -->
+  <header class="flex flex-col md:flex-row md:justify-between md:items-end gap-4">
+    <div>
+      <h1 class="text-3xl font-black text-main tracking-tight">Dashboard & Reports</h1>
+      <p class="text-main/60 font-bold mt-1">Live overview of your minimarket performance</p>
+    </div>
+    
+    <!-- Tab Switcher -->
+    <div class="flex gap-2 bg-surface p-1 rounded-xl border border-theme-border shadow-sm">
       <button (click)="activeTab.set('live')" 
-              [ngClass]="activeTab() === 'live' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'"
-              class="px-4 py-2 rounded-md font-medium transition-all">
+              [class.bg-brand]="activeTab() === 'live'" 
+              [class.text-white]="activeTab() === 'live'"
+              [class.text-main]="activeTab() !== 'live'"
+              class="px-6 py-2 rounded-lg font-bold transition-all">
         Live Dashboard
       </button>
       <button (click)="activeTab.set('zreport')" 
-              [ngClass]="activeTab() === 'zreport' ? 'bg-white shadow-sm text-blue-600' : 'text-slate-500 hover:text-slate-700'"
-              class="px-4 py-2 rounded-md font-medium transition-all">
-        Z-Report
+              [class.bg-brand]="activeTab() === 'zreport'" 
+              [class.text-white]="activeTab() === 'zreport'"
+              [class.text-main]="activeTab() !== 'zreport'"
+              class="px-6 py-2 rounded-lg font-bold transition-all">
+        Z-Report & Drawer
       </button>
     </div>
-  </div>
+  </header>
 
+  <!-- ========================================== -->
+  <!-- TAB: LIVE DASHBOARD                        -->
+  <!-- ========================================== -->
   @if (activeTab() === 'live') {
-    <!-- TOP WIDGETS -->
+    
+    <!-- KPI Summary Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
       
-      <!-- Target Widget -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <div class="text-sm font-medium text-slate-500 mb-1">Today's Revenue</div>
-        <div class="text-3xl font-bold text-slate-800 mb-4">€{{ targetProgress().rev.toFixed(2) }}</div>
-        <div class="w-full bg-slate-100 rounded-full h-2.5">
-          <div class="bg-blue-600 h-2.5 rounded-full transition-all" [style.width.%]="targetProgress().percent"></div>
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm flex flex-col">
+        <span class="text-main/60 font-bold text-sm uppercase tracking-wider mb-2">Today's Profit</span>
+        <span class="text-4xl font-black text-brand">{{ todayProfit() | currency:'EUR' }}</span>
+        <span class="text-main/40 text-xs font-bold mt-2">Retail revenue minus wholesale cost</span>
+      </div>
+
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm flex flex-col">
+        <span class="text-main/60 font-bold text-sm uppercase tracking-wider mb-2">Live Cash In Drawer</span>
+        <span class="text-4xl font-black text-main">{{ liveCashInDrawer() | currency:'EUR' }}</span>
+        <span class="text-main/40 text-xs font-bold mt-2">Cash sales + Manual IN/OUT</span>
+      </div>
+
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm flex flex-col">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-main/60 font-bold text-sm uppercase tracking-wider">Daily Target</span>
+          <span class="text-main font-bold text-sm">{{ targetProgress().percent | number:'1.0-0' }}%</span>
         </div>
-        <div class="text-xs text-slate-500 mt-2 text-right">{{ targetProgress().percent.toFixed(0) }}% of €{{ salesTarget }}</div>
-      </div>
-
-      <!-- Profit Widget -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <div class="text-sm font-medium text-slate-500 mb-1">Today's Profit</div>
-        <div class="text-3xl font-bold text-emerald-600">€{{ todayProfit().toFixed(2) }}</div>
-        <div class="mt-4 text-sm text-slate-500">Net earnings after wholesale cost</div>
-      </div>
-
-      <!-- Cash Drawer Widget -->
-      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-        <div class="text-sm font-medium text-slate-500 mb-1">Live Cash in Drawer</div>
-        <div class="text-3xl font-bold text-slate-800 mb-4">€{{ liveCashInDrawer().toFixed(2) }}</div>
-        <div class="flex gap-2">
-          <button (click)="addManualCash()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-1 rounded text-sm font-medium transition-colors">+ Cash</button>
-          <button (click)="removeManualCash()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-1 rounded text-sm font-medium transition-colors">- Payout</button>
+        <span class="text-4xl font-black text-main">{{ targetProgress().rev | currency:'EUR' }}</span>
+        <!-- Progress Bar -->
+        <div class="w-full bg-base rounded-full h-2 mt-3 border border-theme-border overflow-hidden">
+          <div class="bg-brand h-2 rounded-full transition-all duration-1000" [style.width.%]="targetProgress().percent"></div>
         </div>
       </div>
     </div>
 
-    <!-- SYSTEM ALERTS -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-      <h3 class="text-lg font-bold text-slate-800 mb-4">System Alerts</h3>
-      <div class="space-y-2">
-        @for (alert of systemAlerts(); track alert.msg) {
-          <div class="p-3 rounded-lg flex items-center gap-3" 
-               [ngClass]="alert.type === 'warning' ? 'bg-amber-50 text-amber-800 border border-amber-200' : 'bg-red-50 text-red-800 border border-red-200'">
-            <span class="font-medium">{{ alert.msg }}</span>
-          </div>
-        } @empty {
-          <div class="text-slate-500 italic">No active alerts. System running smoothly.</div>
-        }
+    <!-- Analytics & Alerts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
+      <!-- Top 5 Best-Sellers -->
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm lg:col-span-1">
+        <h2 class="text-xl font-black text-main mb-6">Top 5 Best-Sellers</h2>
+        <div class="flex flex-col gap-3">
+          @if (topSellers().length === 0) {
+            <p class="text-main/50 font-bold text-center py-4">No sales recorded today.</p>
+          } @else {
+            @for (item of topSellers(); track item.name) {
+              <div class="flex justify-between items-center p-3 bg-base rounded-xl border border-theme-border">
+                <span class="font-bold text-main">{{ item.name }}</span>
+                <div class="text-right flex flex-col">
+                  <span class="font-black text-brand">{{ item.qty }} sold</span>
+                  <span class="text-xs text-main/60">{{ item.total | currency:'EUR' }}</span>
+                </div>
+              </div>
+            }
+          }
+        </div>
       </div>
+
+      <!-- Revenue by Category -->
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm lg:col-span-1">
+        <h2 class="text-xl font-black text-main mb-6">Revenue by Category</h2>
+        <div class="flex flex-col gap-4">
+          @if (categoryRevenue().length === 0) {
+            <p class="text-main/50 font-bold text-center py-4">No revenue recorded today.</p>
+          } @else {
+            @for (cat of categoryRevenue(); track cat.name) {
+              <div class="flex flex-col gap-2">
+                <div class="flex justify-between text-sm font-bold">
+                  <span class="text-main">{{ cat.name }}</span>
+                  <span class="text-brand">{{ cat.total | currency:'EUR' }}</span>
+                </div>
+                <!-- Mini bar to visualize category strength against the top category -->
+                <div class="w-full bg-base h-2 rounded-full overflow-hidden border border-theme-border">
+                   <div class="bg-main/30 h-full rounded-full transition-all duration-1000" [style.width.%]="(cat.total / categoryRevenue()[0].total) * 100"></div>
+                </div>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <!-- Low Stock Alerts -->
+      <div class="bg-surface border border-red-500/20 p-6 rounded-3xl shadow-sm lg:col-span-1 flex flex-col">
+        <h2 class="text-xl font-black text-red-500 mb-6 flex items-center gap-2">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+          System Alerts
+        </h2>
+        <div class="flex-1 overflow-y-auto pr-2 space-y-3">
+          @if (systemAlerts().length === 0) {
+            <div class="text-main/50 font-bold flex h-full items-center justify-center">
+              All stock levels are healthy!
+            </div>
+          } @else {
+            @for (alert of systemAlerts(); track alert.msg) {
+              <div class="p-3 bg-red-500/10 border border-red-500/20 rounded-xl">
+                <span class="text-sm font-bold text-red-600">{{ alert.msg }}</span>
+              </div>
+            }
+          }
+        </div>
+      </div>
+
     </div>
   }
 
+  <!-- ========================================== -->
+  <!-- TAB: Z-REPORT & DRAWER                     -->
+  <!-- ========================================== -->
   @if (activeTab() === 'zreport') {
-    <div class="max-w-2xl mx-auto bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
       
-      <!-- Receipt Header -->
-      <div class="text-center border-b-2 border-dashed border-slate-300 pb-6 mb-6">
-        <h2 class="text-3xl font-bold text-slate-800 tracking-tight">ΑΝΑΦΟΡΑ Ζ</h2>
-        <p class="text-slate-500 mt-2">Ημερήσιο Κλείσιμο Ταμείου</p>
-        <p class="text-sm font-medium text-slate-400 mt-1">{{ todayProfit() > 0 ? (systemAlerts().length ? 'Σημερινή Ημερομηνία' : 'Σήμερα') : 'Σήμερα' }}</p>
-      </div>
-
-      <!-- Financial Breakdown -->
-      <div class="space-y-4 text-lg">
+      <!-- Drawer Controls & Logs -->
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm flex flex-col gap-6">
+        <h2 class="text-xl font-black text-main">Cash Drawer Management</h2>
         
-        <div class="flex justify-between items-center py-2">
-          <span class="text-slate-600">Σύνολο Αποδείξεων:</span>
-          <span class="font-bold text-slate-800">{{ zReportSummary().txCount }}</span>
+        <div class="flex gap-4">
+          <button (click)="addManualCash()" class="flex-1 bg-green-500/10 text-green-600 border border-green-500/20 py-3 rounded-xl font-bold hover:bg-green-500/20 transition-all">
+            + Add Cash In
+          </button>
+          <button (click)="removeManualCash()" class="flex-1 bg-red-500/10 text-red-600 border border-red-500/20 py-3 rounded-xl font-bold hover:bg-red-500/20 transition-all">
+            - Payout / Cash Out
+          </button>
         </div>
 
-        <div class="flex justify-between items-center py-2">
-          <span class="text-slate-600">Πωλήσεις (Μετρητά):</span>
-          <span class="font-medium text-slate-800">€{{ zReportSummary().cashSales.toFixed(2) }}</span>
-        </div>
-
-        <div class="flex justify-between items-center py-2">
-          <span class="text-slate-600">Πωλήσεις (Κάρτα):</span>
-          <span class="font-medium text-slate-800">€{{ zReportSummary().cardSales.toFixed(2) }}</span>
-        </div>
-
-        <!-- Cash Drawer Status -->
-        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 my-4">
-          <div class="flex justify-between items-center">
-            <span class="font-bold text-slate-700">Αναμενόμενα Μετρητά στο Συρτάρι:</span>
-            <span class="text-2xl font-black text-blue-600">€{{ liveCashInDrawer().toFixed(2) }}</span>
+        <div>
+          <h3 class="text-sm font-bold text-main/60 uppercase tracking-wider mb-3">Today's Drawer Logs</h3>
+          <div class="space-y-2 max-h-60 overflow-y-auto pr-2">
+            @if (cashLogs().length === 0) {
+              <p class="text-main/50 font-bold text-center py-4">No manual cash entries today.</p>
+            } @else {
+              @for (log of cashLogs(); track log.id) {
+                <div class="flex justify-between items-center p-3 bg-base rounded-xl border border-theme-border text-sm">
+                  <div class="flex items-center gap-3">
+                    <span [class.text-green-500]="log.type === 'IN'" [class.text-red-500]="log.type === 'OUT'" class="font-black">
+                      {{ log.type }}
+                    </span>
+                    <span class="text-main font-bold">{{ log.reason }}</span>
+                  </div>
+                  <div class="flex flex-col text-right">
+                    <span class="font-bold text-main">{{ log.amount | currency:'EUR' }}</span>
+                    <span class="text-xs text-main/40">{{ log.timestamp | date:'shortTime' }}</span>
+                  </div>
+                </div>
+              }
+            }
           </div>
-          <p class="text-xs text-slate-500 mt-2">*(Περιλαμβάνει πωλήσεις μετρητών + προσθήκες/αφαιρέσεις)*</p>
         </div>
-
-        <div class="flex justify-between items-center py-3 border-t-2 border-slate-800 mt-4">
-          <span class="font-black text-xl text-slate-800">ΣΥΝΟΛΟ ΗΜΕΡΑΣ:</span>
-          <span class="font-black text-2xl text-slate-800">€{{ zReportSummary().totalRevenue.toFixed(2) }}</span>
-        </div>
-
-        <div class="flex justify-between items-center py-2 text-emerald-600">
-          <span class="font-bold">Καθαρό Κέρδος:</span>
-          <span class="font-bold">€{{ zReportSummary().totalProfit.toFixed(2) }}</span>
-        </div>
-
       </div>
 
-      <!-- Action Button -->
-      <div class="mt-8 pt-6 border-t border-slate-200">
-        <button 
-          (click)="closeRegister()"
-          class="w-full bg-slate-800 hover:bg-slate-900 text-white py-4 rounded-xl font-bold text-lg transition-all active:scale-95 shadow-md flex justify-center items-center gap-2">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-          Εκτύπωση Z & Κλείσιμο Ημέρας
+      <!-- Z-Report Summary Box -->
+      <div class="bg-surface border border-theme-border p-6 rounded-3xl shadow-sm flex flex-col justify-between">
+        <div>
+          <h2 class="text-xl font-black text-main mb-6">Z-Report Snapshot</h2>
+          <div class="space-y-4">
+            <div class="flex justify-between text-lg border-b border-theme-border pb-2">
+              <span class="font-bold text-main/70">Total Revenue</span>
+              <span class="font-black text-main">{{ zReportSummary().totalRevenue | currency:'EUR' }}</span>
+            </div>
+            <div class="flex justify-between text-lg border-b border-theme-border pb-2">
+              <span class="font-bold text-main/70">Net Profit</span>
+              <span class="font-black text-brand">{{ zReportSummary().totalProfit | currency:'EUR' }}</span>
+            </div>
+            <div class="flex justify-between text-lg border-b border-theme-border pb-2">
+              <span class="font-bold text-main/70">Cash Sales</span>
+              <span class="font-black text-main">{{ zReportSummary().cashSales | currency:'EUR' }}</span>
+            </div>
+            <div class="flex justify-between text-lg border-b border-theme-border pb-2">
+              <span class="font-bold text-main/70">Card/POS Sales</span>
+              <span class="font-black text-main">{{ zReportSummary().cardSales | currency:'EUR' }}</span>
+            </div>
+            <div class="flex justify-between text-lg pb-2">
+              <span class="font-bold text-main/70">Total Transactions</span>
+              <span class="font-black text-main">{{ zReportSummary().txCount }}</span>
+            </div>
+          </div>
+        </div>
+
+        <button (click)="closeRegister()" class="w-full bg-red-600 text-white py-4 rounded-2xl font-black text-xl shadow-lg hover:opacity-90 active:scale-95 transition-all mt-8">
+          Print Z-Report & Close Register
         </button>
       </div>
 
     </div>
   }
+
 </div>

@@ -54,7 +54,7 @@ export class SalesService {
       if (purchasedItem) {
         return { 
           ...product, 
-          stockQuantity: product.stockQuantity - purchasedItem.quantity 
+          stockQuantity: product.stock - purchasedItem.quantity 
         };
       }
       return product;
