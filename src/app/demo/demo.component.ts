@@ -11,6 +11,8 @@ import { FormsModule } from '@angular/forms';
 export class DemoComponent {
   public currentYear = new Date().getFullYear();
 
+  public contactPhone = '306934874068';
+
   // Modal & Package Signals
   public isLeadModalOpen = signal<boolean>(false);
   public selectedPackage = signal<string>('Starter POS (€29/mo)');
@@ -33,6 +35,16 @@ export class DemoComponent {
 
   public closeLeadModal(): void {
     this.isLeadModalOpen.set(false);
+  }
+
+  // Quick link generators
+  public get whatsAppUrl(): string {
+    const text = encodeURIComponent('Γεια σας! Ενδιαφέρομαι για το Maranth POS.');
+    return `https://wa.me/${this.contactPhone}?text=${text}`;
+  }
+
+  public get viberUrl(): string {
+    return `viber://chat?number=%2B${this.contactPhone}`;
   }
 
   // ⭐ AJAX Submit to Web3Forms
