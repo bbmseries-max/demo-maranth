@@ -1,162 +1,144 @@
-<div class="min-h-screen bg-base text-main font-sans">
-  
-  <!-- Header -->
-  <header class="max-w-7xl mx-auto px-6 py-6 flex justify-between items-center border-b border-theme-border">
-    <div class="flex items-center gap-3">
-      <div class="w-10 h-10 rounded-2xl bg-brand text-white flex items-center justify-center font-black text-xl shadow-lg">
-        M
-      </div>
-      <span class="font-black text-xl tracking-tight">Maranth POS</span>
-      <span class="px-2.5 py-0.5 rounded-full bg-green-500/10 text-green-500 text-xs font-bold border border-green-500/20">
-        Live Demo
-      </span>
-    </div>
-
-    <button (click)="openPlanContact('General')" class="px-4 py-2 rounded-xl bg-surface border border-theme-border text-xs font-bold hover:border-brand transition-colors">
-      📞 Επικοινωνία / Εκδήλωση Ενδιαφέροντος
-    </button>
-  </header>
-
-  <!-- Hero Section -->
-  <section class="max-w-5xl mx-auto text-center px-6 pt-16 pb-12">
-    <span class="inline-block px-4 py-1.5 rounded-full bg-brand/10 text-brand text-xs font-black uppercase tracking-wider mb-6">
-      Το #1 Cloud POS για Καφέ, Αρτοποιεία & Λιανική
+<!-- 💰 PRICING & TIMELINE SECTION -->
+<section id="pricing" class="py-20 px-6 max-w-6xl mx-auto text-main">
+  <div class="text-center max-w-2xl mx-auto mb-16">
+    <span class="text-xs font-black tracking-widest text-brand uppercase bg-brand/10 px-3 py-1 rounded-full border border-brand/20">
+      Ευέλικτα Πακέτα
     </span>
-    <h1 class="text-4xl md:text-6xl font-black tracking-tight text-main mb-6 leading-tight">
-      Οργανώστε το Ταμείο & την Αποθήκη σας σε <span class="text-brand">3 Λεπτά</span>.
-    </h1>
-    <p class="text-lg md:text-xl text-main/70 max-w-2xl mx-auto mb-10 font-medium">
-      Χωρίς δεσμεύσεις, χωρίς ακριβό εξοπλισμό. Δοκιμάστε το λογισμικό ζωντανά ή επιλέξτε το πλάνο σας.
+    <h2 class="text-3xl sm:text-4xl font-black mt-4 tracking-tight">
+      Διαφανής Τιμολόγηση Χωρίς Κρυφές Χρεώσεις
+    </h2>
+    <p class="text-sm text-main/70 mt-3 font-medium">
+      Πλήρης παραμετροποίηση, εγκατάσταση στο κατάστημά σας και παράδοση της **Έκδοσης 1 σε 5–7 εργάσιμες ημέρες**.
     </p>
+  </div>
 
-    <!-- Hero Action Buttons -->
-    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <button (click)="launchDemoSession()" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-brand text-white font-black text-lg shadow-xl shadow-brand/20 hover:scale-105 transition-transform flex items-center justify-center gap-2">
-        🚀 Δοκιμάστε το POS Ζωντανά
-      </button>
-      
-      <!-- Fixed Smooth Scroll Button -->
-      <button (click)="scrollToSection('pricing')" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-surface border border-theme-border font-bold text-main hover:border-brand transition-colors">
-        Δείτε τα Πακέτα (€29/μήνα) ↓
-      </button>
-    </div>
-  </section>
+  <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+    
+    <!-- TIER 1: STARTER -->
+    <div class="bg-surface border border-theme-border rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all relative flex flex-col justify-between">
+      <div>
+        <div class="flex justify-between items-start mb-4">
+          <div>
+            <h3 class="text-xl font-black text-main">Starter POS</h3>
+            <p class="text-xs text-main/60 mt-1 font-medium">Για μικρά καφέ, αρτοποιεία & mini market</p>
+          </div>
+          <span class="text-xs bg-base px-2.5 py-1 rounded-lg border border-theme-border font-bold text-main/70">1 Τερματικό</span>
+        </div>
 
-  <!-- Interactive Demo Banner -->
-  <section class="max-w-6xl mx-auto px-6 my-8">
-    <div class="bg-gradient-to-br from-surface to-base border-2 border-brand/30 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
-      <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-        <div class="space-y-2">
-          <h3 class="text-2xl font-black text-main">⚡ Θέλετε να δείτε πώς λειτουργεί;</h3>
-          <p class="text-main/70 text-sm font-medium">
-            Εισέλθετε στο διαδραστικό περιβάλλον δοκιμής με προ-φορτωμένα προϊόντα, πόντους πελατών & στατιστικά.
+        <div class="my-6 pb-6 border-b border-theme-border">
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-black text-brand">€29</span>
+            <span class="text-xs font-bold text-main/60">/ μήνα</span>
+          </div>
+          <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2">
+            + €250 αρχική παραμετροποίηση & εγκατάσταση
           </p>
         </div>
-        <button (click)="launchDemoSession()" class="px-6 py-3 rounded-xl bg-brand text-white font-bold whitespace-nowrap hover:bg-brand/90 transition-colors">
-          Είσοδος στο Demo →
-        </button>
-      </div>
-    </div>
-  </section>
 
-  <!-- Pricing Cards Section -->
-  <section id="pricing" class="max-w-6xl mx-auto px-6 py-16 border-t border-theme-border">
-    <div class="text-center mb-12">
-      <h2 class="text-3xl font-black text-main mb-3">Διάφανες Τιμές, Χωρίς Κρυφές Χρεώσεις</h2>
-      <p class="text-main/60 font-medium">Επιλέξτε το πλάνο που ταιριάζει στο κατάστημά σας.</p>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-      
-      <!-- Starter Plan Card -->
-      <div class="bg-surface border border-theme-border rounded-3xl p-8 relative flex flex-col justify-between">
-        <div>
-          <h3 class="text-xl font-black text-main mb-2">STARTER</h3>
-          <p class="text-xs text-main/60 mb-6">Ιδανικό για 1 ταμείο / μικρά καταστήματα</p>
-          <div class="text-4xl font-black text-main mb-6">
-            €29 <span class="text-sm font-medium text-main/50">/ μήνα</span>
-          </div>
-          <ul class="space-y-3 text-sm font-medium text-main/80 mb-8">
-            <li class="flex items-center gap-2">✓ Πλήρες Touch POS & Barcode</li>
-            <li class="flex items-center gap-2">✓ Διαχείριση Αποθήκης & Λήξεων</li>
-            <li class="flex items-center gap-2">✓ Εκτυπώσεις & Έλεγχος Συρταριού</li>
-            <li class="flex items-center gap-2">✓ Analytics & Αναφορά Z</li>
-          </ul>
-        </div>
-        
-        <div class="flex flex-col gap-2">
-          <button (click)="openPlanContact('Starter Plan (€29/mo)')" class="w-full py-3 rounded-xl bg-brand text-white font-bold hover:bg-brand/90 transition-colors">
-            Επιλογή Starter
-          </button>
-          <button (click)="launchDemoSession()" class="w-full py-2 text-xs font-bold text-main/60 hover:text-main transition-colors">
-            Δοκιμή στο POS πρώτα →
-          </button>
-        </div>
+        <ul class="space-y-3 text-xs font-medium text-main/80 mb-8">
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-black">✓</span> 1 Θέση Εργασίας / POS Terminal
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-black">✓</span> Κατάλογος έως 100 προϊόντα
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-black">✓</span> Σύνδεση με 1 θερμικό εκτυπωτή & συρτάρι
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-black">✓</span> Ημερήσια αναφορά Z-Report & analytics
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-emerald-500 font-black">✓</span> Εκπαίδευση προσωπικού (1-2 ώρες)
+          </li>
+        </ul>
       </div>
 
-      <!-- Pro Plan Card -->
-      <div class="bg-surface border-2 border-brand rounded-3xl p-8 relative flex flex-col justify-between shadow-2xl">
-        <span class="absolute -top-3.5 right-6 px-3 py-1 rounded-full bg-brand text-white text-xs font-black uppercase">
-          Δημοφιλες
-        </span>
-        <div>
-          <h3 class="text-xl font-black text-main mb-2">PRO / ENTERPRISE</h3>
-          <p class="text-xs text-main/60 mb-6">Για καταστήματα με αυξημένες απαιτήσεις</p>
-          <div class="text-4xl font-black text-main mb-6">
-            €49 <span class="text-sm font-medium text-main/50">/ μήνα</span>
-          </div>
-          <ul class="space-y-3 text-sm font-medium text-main/80 mb-8">
-            <li class="flex items-center gap-2">✓ Όλα τα χαρακτηριστικά του Starter</li>
-            <li class="flex items-center gap-2">✓ Πολλαπλά Ταμεία & Χρήστες (Team)</li>
-            <li class="flex items-center gap-2">✓ Σύστημα Πόντων & Χρέη Πελατών</li>
-            <li class="flex items-center gap-2">✓ VIP Τηλεφωνική Υποστήριξη 24/7</li>
-          </ul>
-        </div>
+      <a href="#lead-form" class="w-full py-3.5 text-center rounded-2xl bg-base border border-theme-border text-main font-bold text-xs hover:bg-brand hover:text-white transition-all">
+        Ζητήστε Προσφορά Starter
+      </a>
+    </div>
 
-        <div class="flex flex-col gap-2">
-          <button (click)="openPlanContact('Pro Plan (€49/mo)')" class="w-full py-3 rounded-xl bg-brand text-white font-bold hover:bg-brand/90 transition-colors">
-            Επιλογή Pro
-          </button>
-          <button (click)="launchDemoSession()" class="w-full py-2 text-xs font-bold text-main/60 hover:text-main transition-colors">
-            Δοκιμή στο POS πρώτα →
-          </button>
-        </div>
+    <!-- TIER 2: BUSINESS / PRO (RECOMMENDED) -->
+    <div class="bg-surface border-2 border-brand rounded-3xl p-8 shadow-2xl transition-all relative flex flex-col justify-between">
+      <div class="absolute -top-3.5 right-6 bg-brand text-white text-[10px] font-extrabold uppercase px-3 py-1 rounded-full tracking-wider shadow-md">
+        Δημοφιλεσ
       </div>
 
-    </div>
-  </section>
-
-  <!-- PLAN SELECTION / LEAD CONTACT MODAL -->
-  @if (isContactModalOpen()) {
-    <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div class="bg-surface border border-theme-border w-full max-w-md rounded-3xl p-6 shadow-2xl flex flex-col gap-4 text-main">
-        <div class="flex justify-between items-center border-b border-theme-border pb-3">
-          <h3 class="font-black text-lg">
-            📩 Εκδήλωση Ενδιαφέροντος
-          </h3>
-          <button (click)="closeContactModal()" class="text-main/50 hover:text-main font-bold">✕</button>
-        </div>
-        
-        <p class="text-xs text-main/70">
-          Επιλέξατε: <strong class="text-brand">{{ selectedPlan() }}</strong>. Συμπληρώστε τα στοιχεία σας για άμεση ενεργοποίηση ή επικοινωνία.
-        </p>
-
-        <form (submit)="$event.preventDefault(); closeContactModal()" class="space-y-3">
+      <div>
+        <div class="flex justify-between items-start mb-4">
           <div>
-            <label class="text-xs font-bold text-main/70 block mb-1">Όνομα Καταστήματος / Υπευθύνου</label>
-            <input type="text" placeholder="π.χ. Coffee Corner" class="w-full px-3 py-2 rounded-xl bg-base border border-theme-border text-sm font-medium focus:outline-none focus:border-brand" required />
+            <h3 class="text-xl font-black text-main">Business / Pro</h3>
+            <p class="text-xs text-main/60 mt-1 font-medium">Για μεγαλύτερες επιχειρήσεις & εστίαση</p>
           </div>
-          <div>
-            <label class="text-xs font-bold text-main/70 block mb-1">Τηλέφωνο Επικοινωνίας</label>
-            <input type="tel" placeholder="69XXXXXXXX" class="w-full px-3 py-2 rounded-xl bg-base border border-theme-border text-sm font-medium focus:outline-none focus:border-brand" required />
-          </div>
+          <span class="text-xs bg-brand/10 text-brand px-2.5 py-1 rounded-lg font-bold border border-brand/20">Multi-Station</span>
+        </div>
 
-          <button type="submit" class="w-full py-3 rounded-xl bg-brand text-white font-bold text-sm hover:bg-brand/90 transition-colors mt-2">
-            Αποστολή & Επικοινωνία
-          </button>
-        </form>
+        <div class="my-6 pb-6 border-b border-theme-border">
+          <div class="flex items-baseline gap-1">
+            <span class="text-4xl font-black text-brand">€49</span>
+            <span class="text-xs font-bold text-main/60">/ μήνα</span>
+          </div>
+          <p class="text-xs font-bold text-emerald-600 dark:text-emerald-400 mt-2">
+            + €500 αρχική παραμετροποίηση & εγκατάσταση
+          </p>
+        </div>
+
+        <ul class="space-y-3 text-xs font-medium text-main/80 mb-8">
+          <li class="flex items-center gap-2">
+            <span class="text-brand font-black">✓</span> 2+ Τερματικά & σύνδεση Κουζίνας / Bar
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-brand font-black">✓</span> Απεριόριστος κατάλογος & κατηγορίες
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-brand font-black">✓</span> Διαχείριση Αποθήκης & Ειδοποιήσεις Low Stock
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-brand font-black">✓</span> Heatmap πωλήσεων & True Profit Analytics
+          </li>
+          <li class="flex items-center gap-2">
+            <span class="text-brand font-black">✓</span> VIP Υποστήριξη (Viber & τηλέφωνο 7 ημέρες/βδομάδα)
+          </li>
+        </ul>
+      </div>
+
+      <a href="#lead-form" class="w-full py-3.5 text-center rounded-2xl bg-brand text-white font-bold text-xs hover:bg-brand/90 transition-all shadow-lg">
+        Ζητήστε Προσφορά Business
+      </a>
+    </div>
+
+  </div>
+
+  <!-- ⏳ TIMELINE ROADMAP BANNER -->
+  <div class="mt-16 bg-base border border-theme-border rounded-3xl p-6 sm:p-8 text-center max-w-4xl mx-auto">
+    <h4 class="text-base font-black text-main mb-2">🚀 Χρονοδιάγραμμα Υλοποίησης (Version 1)</h4>
+    <p class="text-xs text-main/70 mb-6 font-medium">Από τη συμφωνία μέχρι τη ζωντανή λειτουργία στο κατάστημά σας:</p>
+    
+    <div class="grid sm:grid-cols-4 gap-4 text-left">
+      <div class="bg-surface p-4 rounded-2xl border border-theme-border">
+        <span class="text-[10px] font-black text-brand uppercase tracking-wider block mb-1">Ημερα 1-2</span>
+        <div class="text-xs font-bold text-main">Συλλογή Μενού</div>
+        <div class="text-[11px] text-main/60 mt-1">Εισαγωγή προϊόντων & τιμών από Excel/PDF</div>
+      </div>
+
+      <div class="bg-surface p-4 rounded-2xl border border-theme-border">
+        <span class="text-[10px] font-black text-brand uppercase tracking-wider block mb-1">Ημερα 3-5</span>
+        <div class="text-xs font-bold text-main">Ρύθμιση Cloud DB</div>
+        <div class="text-[11px] text-main/60 mt-1">Παραμετροποίηση κατηγοριών & ΦΠΑ</div>
+      </div>
+
+      <div class="bg-surface p-4 rounded-2xl border border-theme-border">
+        <span class="text-[10px] font-black text-brand uppercase tracking-wider block mb-1">Ημερα 6</span>
+        <div class="text-xs font-bold text-main">Έλεγχος Hardware</div>
+        <div class="text-[11px] text-main/60 mt-1">Σύνδεση εκτυπωτών & συρταριού</div>
+      </div>
+
+      <div class="bg-surface p-4 rounded-2xl border border-theme-border">
+        <span class="text-[10px] font-black text-brand uppercase tracking-wider block mb-1">Ημερα 7</span>
+        <div class="text-xs font-bold text-main">Live Launch</div>
+        <div class="text-[11px] text-main/60 mt-1">Εγκατάσταση & Εκπαίδευση προσωπικού</div>
       </div>
     </div>
-  }
-
-</div>
+  </div>
+</section>
