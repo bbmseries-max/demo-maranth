@@ -37,6 +37,10 @@ export class InventoryComponent {
   // Products from service
   public products = this.inventoryService.products;
 
+  // Signals for Category Modal
+  public isCategoryModalOpen = signal<boolean>(false);
+  public editingCategory = signal<Partial<CategoryItem> | null>(null);
+
   // Search filter
   public searchQuery = signal<string>('');
 
@@ -129,6 +133,37 @@ export class InventoryComponent {
     } else {
       this.inventoryService.products.set([...currentProds, prod as Product]);
     }
+}
+
+// Open & Close Category Modal
+public openCategoryModal(cat?: CategoryItem): void {
+  if (cat) {
+    this.editingCategory.set({ ...cat });
+  } else {
+    this.editingCategory.set({ id: 'c_' + Date.now(), name: '', productCount: 0 });
+  }
+  this.isCategoryModalOpen.set(true);
+}
+
+public closeCategoryModal(): void {
+  this.isCategoryModalOpen.set(false);
+  this.editingCategory.set(null);
+}
+
+public saveCategory(): void {
+  const category = this.editingCategory();
+  if (!category || !category.name) return;
+
+  this.categories.update(list => {
+    const idx = list.findIndex(c => c.id === category.id);
+    if (idx > -1) {
+      list[idx] = category as CategoryItem;
+      return [...list];
+    }
+    return [...list, category as CategoryItem];
+  });
+
+  this.closeCategoryModal();
 }
 
   public openSupplierModal(supplier?: Supplier) {
