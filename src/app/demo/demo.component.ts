@@ -12,6 +12,9 @@ export class DemoComponent {
   private router = inject(Router);
   private inventoryService = inject(InventoryService);
 
+ public isDisclaimerModalOpen = signal<boolean>(false);
+  public isGdprModalOpen = signal<boolean>(false);
+
   // Modal State for Plan Selection / Lead Contact
   public isContactModalOpen = signal<boolean>(false);
   public selectedPlan = signal<string>('Starter');
@@ -36,21 +39,4 @@ export class DemoComponent {
   public closeContactModal() {
     this.isContactModalOpen.set(false);
   }
-// ⭐ GDPR & Disclaimer Handlers
-  public openGdpr(): void {
-    alert(
-      '🔒 Πολιτική Προστασίας Δεδομένων (GDPR)\n\n' +
-      'Η Maranth POS δεν συλλέγει προσωπικά δεδομένα κατά τη διάρκεια της δοκιμής (Demo). ' +
-      'Όλα τα στοιχεία που εισάγονται στη φόρμα επικοινωνίας χρησιμοποιούνται αποκλειστικά για την επικοινωνία μαζί σας.'
-    );
-  }
-
-  public openDisclaimer(): void {
-    alert(
-      '⚖️ Όροι Χρήσης & Αποποίηση Ευθύνης\n\n' +
-      'Η παρούσα εφαρμογή αποτελεί δοκιμαστική έκδοση (Demo). ' +
-      'Τα δεδομένα πωλήσεων και προϊόντων στο demo περιβάλλον είναι εικονικά και δεν αντικατοπτρίζουν πραγματικές φορολογικές συναλλαγές.'
-    );
-  }
-
 }
