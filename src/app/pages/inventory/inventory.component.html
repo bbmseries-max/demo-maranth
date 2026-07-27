@@ -64,43 +64,109 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-theme-border text-main font-medium text-sm">
-            <!-- 📦 INVENTORY / ΑΠΟΘΗΚΗ MOBILE SCROLL WRAPPER -->
-<div class="w-full overflow-x-auto rounded-2xl border border-theme-border bg-surface shadow-sm">
-  <table class="w-full text-left border-collapse min-w-[650px]">
+            <!-- 🖥️ DESKTOP TABLE VIEW -->
+<div class="hidden md:block w-full overflow-x-auto rounded-2xl border border-theme-border bg-surface shadow-sm">
+  <table class="w-full text-left border-collapse">
     <thead>
       <tr class="border-b border-theme-border bg-base text-[11px] font-black uppercase text-main/70">
-        <th class="p-3">Προϊόν</th>
-        <th class="p-3">Κατηγορία</th>
-        <th class="p-3">Τιμή (€)</th>
-        <th class="p-3">Απόθεμα</th>
-        <th class="p-3 text-right">Ενέργειες</th>
+        <th class="p-3.5">Προϊόν</th>
+        <th class="p-3.5">Κατηγορία</th>
+        <th class="p-3.5">Τιμή (€)</th>
+        <th class="p-3.5">Απόθεμα</th>
+        <th class="p-3.5 text-right">Ενέργειες</th>
       </tr>
     </thead>
     <tbody class="divide-y divide-theme-border text-xs">
       @for (product of products(); track product.id) {
-        <tr class="hover:bg-base/50 transition-colors">
-          <td class="p-3 font-bold text-main whitespace-nowrap">
+        <tr 
+          (click)="editProduct(product)"
+          class="hover:bg-brand/5 cursor-pointer transition-colors group">
+          
+          <td class="p-3.5 font-bold text-main whitespace-nowrap group-hover:text-brand transition-colors">
             {{ product.name }}
           </td>
-          <td class="p-3 text-main/70 whitespace-nowrap">
-            {{ product.category || 'Γενικά' }}
+          <td class="p-3.5 text-main/70 whitespace-nowrap">
+            {{ product.category|| 'Γενικά' }}
           </td>
-          <td class="p-3 font-bold text-brand whitespace-nowrap">
+          <td class="p-3.5 font-black text-brand whitespace-nowrap">
             €{{ product.price | number:'1.2-2' }}
           </td>
-          <td class="p-3 whitespace-nowrap">
-            <span [class]="product.stock <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'" 
-                  class="px-2 py-0.5 rounded-full font-bold text-[10px]">
-              {{ product.stockQuantity }} τμχ
-            </span>
+          <td class="p-3.5 whitespace-nowrap">
+           <span [class]="(product.stockQuantity ?? 0) <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'"
+      class="px-2.5 py-1 rounded-full font-bold text-[10px] border border-current/20">
+  {{ product.stockQuantity ?? 0 }} τμχ
+</span>
           </td>
-          <td class="p-3 text-right whitespace-nowrap">
-            <!-- Edit / Delete buttons -->
+          
+          <!-- Delete Icon Button -->
+          <td class="p-3.5 text-right whitespace-nowrap" (click)="$event.stopPropagation()">
+            <button 
+              (click)="deleteProduct(product.id)" 
+              class="p-2 rounded-xl text-main/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
+              title="Διαγραφή">
+              🗑️
+            </button>
           </td>
         </tr>
       }
     </tbody>
   </table>
+</div>
+
+<!-- 🖥️ DESKTOP VIEW -->
+<div class="hidden md:block w-full overflow-x-auto rounded-2xl border border-theme-border bg-surface shadow-sm">
+  <table class="w-full text-left border-collapse">
+    <thead>
+      <tr class="border-b border-theme-border bg-base text-[11px] font-black uppercase text-main/70">
+        <th class="p-3.5">Προϊόν</th>
+        <th class="p-3.5">Κατηγορία</th>
+        <th class="p-3.5">Τιμή (€)</th>
+        <th class="p-3.5">Απόθεμα</th>
+        <th class="p-3.5 text-right">Ενέργειες</th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-theme-border text-xs">
+      @for (product of filteredProducts(); track product.id) {
+        <tr (click)="editProduct(product)" class="hover:bg-brand/5 cursor-pointer transition-colors">
+          <td class="p-3.5 font-bold text-main whitespace-nowrap">{{ product.name }}</td>
+          <td class="p-3.5 text-main/70 whitespace-nowrap">{{ product.category || 'Γενικά' }}</td>
+          <td class="p-3.5 font-black text-brand whitespace-nowrap">€{{ product.price | number:'1.2-2' }}</td>
+          <td class="p-3.5 whitespace-nowrap">
+            <span [class]="(product.stock || 0) <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'"
+                  class="px-2.5 py-1 rounded-full font-bold text-[10px] border border-current/20">
+              {{ product.stock || 0 }} τμχ
+            </span>
+          </td>
+          <td class="p-3.5 text-right whitespace-nowrap" (click)="$event.stopPropagation()">
+            <button (click)="deleteProduct(product.id)" class="p-2 text-main/40 hover:text-red-500 hover:bg-red-500/10 rounded-xl">
+              🗑️
+            </button>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+
+<!-- 📱 MOBILE VIEW -->
+<div class="grid grid-cols-1 gap-3 md:hidden">
+  @for (product of filteredProducts(); track product.id) {
+    <div (click)="editProduct(product)" class="bg-surface border border-theme-border rounded-2xl p-4 shadow-sm flex justify-between items-center cursor-pointer">
+      <div>
+        <h4 class="font-black text-sm text-main">{{ product.name }}</h4>
+        <p class="text-[11px] text-main/60 font-medium mt-0.5">
+          {{ product.category || 'Γενικά' }} • <strong class="text-brand">€{{ product.price | number:'1.2-2' }}</strong>
+        </p>
+        <span [class]="(product.stock || 0) <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'"
+              class="px-2.5 py-0.5 rounded-full font-bold text-[10px] border border-current/20 inline-block mt-2">
+          {{ product.stock || 0 }} τμχ
+        </span>
+      </div>
+      <button (click)="$event.stopPropagation(); deleteProduct(product.id)" class="p-2.5 rounded-xl bg-base border border-theme-border text-main/50 hover:text-red-500">
+        🗑️
+      </button>
+    </div>
+  }
 </div>
           </tbody>
         </table>

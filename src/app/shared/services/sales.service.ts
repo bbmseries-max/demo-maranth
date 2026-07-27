@@ -15,11 +15,11 @@ export interface Transaction {
 export class SalesService {
   private inventoryService = inject(InventoryService);
   
-  // 1. The Signal: Holds our transaction history
+  // 1. Transaction History Signal
   public transactions = signal<Transaction[]>(this.loadSavedTransactions());
 
   constructor() {
-    // 2. Auto-save all sales to the browser
+    // 2. Auto-save all transactions to localStorage
     effect(() => {
       if (typeof window !== 'undefined') {
         localStorage.setItem('maranth_transactions', JSON.stringify(this.transactions()));
@@ -34,8 +34,8 @@ export class SalesService {
     return saved ? JSON.parse(saved) : [];
   }
 
-  // 4. The Master Checkout Function
-  public processCheckout(cartItems: any[], total: number, method: 'Cash' | 'Card') {
+  // 4. Master Checkout Function
+  public processCheckout(cartItems: any[], total: number, method: 'Cash' | 'Card'): void {
     // A. Save the receipt
     const newTx: Transaction = {
       id: Date.now().toString(),
@@ -47,14 +47,15 @@ export class SalesService {
     
     this.transactions.update(txs => [...txs, newTx]);
 
-    // B. Deduct the inventory instantly
+    // B. Deduct inventory stock instantly
     const currentProducts = this.inventoryService.products();
     const updatedProducts = currentProducts.map(product => {
       const purchasedItem = cartItems.find(item => item.product.id === product.id);
       if (purchasedItem) {
+        const currentStock = product.stock ?? 0;
         return { 
           ...product, 
-          stockQuantity: product.stock - purchasedItem.quantity 
+          stock: Math.max(0, currentStock - purchasedItem.quantity) 
         };
       }
       return product;
@@ -62,4 +63,6 @@ export class SalesService {
     
     this.inventoryService.products.set(updatedProducts);
   }
+
+  
 }

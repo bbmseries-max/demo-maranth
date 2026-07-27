@@ -2,6 +2,7 @@ import { Component, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { InventoryService, Product } from '../../shared/services/inventory.service';
+import { SalesService } from '../../shared/services/sales.service';
 
 export interface Supplier {
   id: string;
@@ -24,7 +25,11 @@ export interface CategoryItem {
   templateUrl: './inventory.component.html'
 })
 export class InventoryComponent {
+  public salesService = inject(SalesService);
   private inventoryService = inject(InventoryService);
+
+  public selectedProduct = signal<any | null>(null);
+  public isEditModalOpen = signal<boolean>(false);
 
   // Active Tab State
   public activeTab = signal<'products' | 'categories' | 'suppliers' | 'expirations'>('products');
@@ -72,9 +77,17 @@ export class InventoryComponent {
     return this.products().filter(p => p.expirationDate !== undefined);
   });
 
+  
+
   // Tab Switcher
   public setTab(tab: 'products' | 'categories' | 'suppliers' | 'expirations') {
     this.activeTab.set(tab);
+  }
+
+  // 4. Click handlers
+  public editProduct(product: any): void {
+    this.selectedProduct.set(product);
+    this.isEditModalOpen.set(true);
   }
 
   // --- Modal Logic ---
@@ -116,9 +129,7 @@ export class InventoryComponent {
     } else {
       this.inventoryService.products.set([...currentProds, prod as Product]);
     }
-
-    this.closeProductModal();
-  }
+}
 
   public openSupplierModal(supplier?: Supplier) {
     if (supplier) {
@@ -149,4 +160,9 @@ export class InventoryComponent {
 
     this.closeSupplierModal();
   }
+
+  // Inside InventoryService:
+public deleteProduct(productId: string): void {
+  this.products.update(items => items.filter(p => p.id !== productId));
+}
 }
