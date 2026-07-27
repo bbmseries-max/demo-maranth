@@ -77,38 +77,42 @@
       </tr>
     </thead>
     <tbody class="divide-y divide-theme-border text-xs">
-      @for (product of products(); track product.id) {
-        <tr 
-          (click)="editProduct(product)"
-          class="hover:bg-brand/5 cursor-pointer transition-colors group">
-          
-          <td class="p-3.5 font-bold text-main whitespace-nowrap group-hover:text-brand transition-colors">
-            {{ product.name }}
-          </td>
-          <td class="p-3.5 text-main/70 whitespace-nowrap">
-            {{ product.category|| 'Γενικά' }}
-          </td>
-          <td class="p-3.5 font-black text-brand whitespace-nowrap">
-            €{{ product.price | number:'1.2-2' }}
-          </td>
-          <td class="p-3.5 whitespace-nowrap">
-           <span [class]="(product.stockQuantity ?? 0) <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'"
-      class="px-2.5 py-1 rounded-full font-bold text-[10px] border border-current/20">
-  {{ product.stockQuantity ?? 0 }} τμχ
-</span>
-          </td>
-          
-          <!-- Delete Icon Button -->
-          <td class="p-3.5 text-right whitespace-nowrap" (click)="$event.stopPropagation()">
-            <button 
-              (click)="deleteProduct(product.id)" 
-              class="p-2 rounded-xl text-main/40 hover:text-red-500 hover:bg-red-500/10 transition-all"
-              title="Διαγραφή">
-              🗑️
-            </button>
-          </td>
-        </tr>
-      }
+     <!-- 📱 MOBILE CARD VIEW -->
+<div class="grid grid-cols-1 gap-3 md:hidden">
+  @for (product of filteredProducts(); track product.id) {
+    <div 
+      (click)="editProduct(product)"
+      class="bg-surface border border-theme-border rounded-2xl p-4 shadow-sm flex justify-between items-center cursor-pointer active:scale-[0.99] transition-all hover:border-brand/50">
+      
+      <!-- Product Details (Click to Edit) -->
+      <div>
+        <h4 class="font-black text-sm text-main leading-tight">
+          {{ product.name }}
+        </h4>
+        <p class="text-[11px] text-main/60 font-medium mt-0.5">
+          {{ product.category || 'Γενικά' }} • <strong class="text-brand">€{{ product.price | number:'1.2-2' }}</strong>
+        </p>
+        <div class="mt-2">
+          <span 
+            [class]="(product.stockQuantity ?? 0) <= 5 ? 'bg-red-500/10 text-red-500 border-red-500/20' : 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20'"
+            class="px-2.5 py-0.5 rounded-full font-bold text-[10px] border border-current/20">
+            {{ product.stockQuantity ?? 0 }} τμχ
+          </span>
+        </div>
+      </div>
+
+      <!-- 🗑️ Single Delete Icon Option (Stops event propagation so it won't open edit) -->
+      <button 
+        type="button"
+        (click)="$event.stopPropagation(); deleteProduct(product.id)" 
+        class="p-2.5 rounded-xl bg-base border border-theme-border text-main/50 hover:text-red-500 hover:border-red-500/30 transition-all shrink-0 ml-3"
+        title="Διαγραφή">
+        🗑️
+      </button>
+
+    </div>
+  }
+</div>
     </tbody>
   </table>
 </div>
