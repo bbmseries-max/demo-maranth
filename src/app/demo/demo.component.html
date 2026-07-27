@@ -54,9 +54,11 @@
         </ul>
       </div>
 
-      <a href="#lead-form" class="w-full py-3.5 text-center rounded-2xl bg-base border border-theme-border text-main font-bold text-xs hover:bg-brand hover:text-white transition-all">
-        Ζητήστε Προσφορά Starter
-      </a>
+      <button 
+  (click)="openLeadModal('Starter POS (€29/mo)')"
+  class="w-full py-3.5 text-center rounded-2xl bg-base border border-theme-border text-main font-bold text-xs hover:bg-brand hover:text-white transition-all">
+  Ζητήστε Προσφορά Starter
+</button>
     </div>
 
     <!-- TIER 2: BUSINESS / PRO (RECOMMENDED) -->
@@ -103,9 +105,11 @@
         </ul>
       </div>
 
-      <a href="#lead-form" class="w-full py-3.5 text-center rounded-2xl bg-brand text-white font-bold text-xs hover:bg-brand/90 transition-all shadow-lg">
-        Ζητήστε Προσφορά Business
-      </a>
+      <button 
+  (click)="openLeadModal('Business / Pro (€49/mo)')"
+  class="w-full py-3.5 text-center rounded-2xl bg-brand text-white font-bold text-xs hover:bg-brand/90 transition-all shadow-lg">
+  Ζητήστε Προσφορά Business
+</button>
     </div>
 
   </div>
@@ -142,3 +146,24 @@
     </div>
   </div>
 </section>
+  <!-- ========================================== -->
+  <!-- FOOTER LEGAL PAPERS & COMPLIANCE BAR       -->
+  <!-- ========================================== -->
+  <footer class="mt-12 pt-6 border-t border-theme-border flex flex-col md:flex-row items-center justify-between text-xs text-main/50 gap-4">
+    <div class="flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500"></span>
+      <span class="font-bold">Maranth POS v1.0 • Internal Management Edition</span>
+    </div>
+
+ <footer class="mt-20 border-t border-theme-border py-8 text-center text-xs text-main/60">
+  <div class="flex justify-center gap-6 mb-4 font-medium">
+    <button (click)="openGdpr()" class="hover:text-brand transition-colors">
+      Πολιτική GDPR
+    </button>
+    <span>•</span>
+    <button (click)="openDisclaimer()" class="hover:text-brand transition-colors">
+      Όροι Χρήσης & Disclaimer
+    </button>
+  </div>
+  <p>© {{ currentYear }} Maranth POS. All rights reserved.</p>
+</footer>
