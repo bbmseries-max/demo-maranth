@@ -64,29 +64,26 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-theme-border text-main font-medium text-sm">
-            @for (product of filteredProducts(); track product.id) {
-              <tr class="hover:bg-base/30 transition-colors">
-                <td class="p-4 flex items-center gap-3">
-                  <span class="text-2xl p-2 bg-base rounded-xl">{{ product.icon || '📦' }}</span>
-                  <span class="font-bold">{{ product.name }}</span>
-                </td>
-                <td class="p-4"><span class="px-3 py-1 rounded-xl bg-brand/10 text-brand font-bold text-xs">{{ product.category }}</span></td>
-                <td class="p-4 font-mono text-xs text-main/60">{{ product.barcode || '—' }}</td>
-                <td class="p-4 font-black text-brand">{{ product.price | currency:'EUR' }}</td>
-                <td class="p-4">
-                  @if (product.pinnedToPos) {
-                    <span class="text-green-500 font-bold text-xs bg-green-500/10 px-2.5 py-1 rounded-lg">Ναι</span>
-                  } @else {
-                    <span class="text-main/40 font-bold text-xs">Όχι</span>
-                  }
-                </td>
-                <td class="p-4 text-right">
-                  <button (click)="openProductModal(product)" class="p-2 rounded-xl bg-base hover:bg-brand hover:text-white transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 210.3H3v-3.572L16.732 3.732z"></path></svg>
-                  </button>
-                </td>
-              </tr>
-            }
+            <!-- 📱 MOBILE CARD VIEW (Shows full cards on phones) -->
+<div class="grid grid-cols-1 gap-3 md:hidden">
+  @for (product of products(); track product.id) {
+    <div class="bg-surface border border-theme-border rounded-2xl p-4 shadow-sm flex justify-between items-center">
+      <div>
+        <h4 class="font-black text-sm text-main">{{ product.name }}</h4>
+        <p class="text-[11px] text-main/60 font-medium mt-0.5">
+          {{ product.category }} • €{{ product.price | number:'1.2-2' }}
+        </p>
+      </div>
+
+      <div class="text-right">
+        <span class="px-2.5 py-1 rounded-full text-[11px] font-bold block mb-1"
+              [class]="product.stock <= 5 ? 'bg-red-500/10 text-red-500' : 'bg-emerald-500/10 text-emerald-600'">
+          {{ product.stockQuantity }} τμχ
+        </span>
+      </div>
+    </div>
+  }
+</div>
           </tbody>
         </table>
       </div>
