@@ -167,3 +167,96 @@
   </div>
   <p>© {{ currentYear }} Maranth POS. All rights reserved.</p>
 </footer>
+<!-- 📩 WEB3FORMS LEAD CAPTURE MODAL -->
+@if (isLeadModalOpen()) {
+  <div class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <div class="bg-surface border border-theme-border rounded-3xl p-6 sm:p-8 shadow-2xl max-w-md w-full text-main relative">
+      
+      <!-- Close Button -->
+      <button (click)="closeLeadModal()" class="absolute top-4 right-4 text-main/50 hover:text-main font-bold text-lg">✕</button>
+
+      @if (!submitSuccess()) {
+        <div class="mb-6">
+          <span class="text-[10px] font-black text-brand uppercase tracking-wider bg-brand/10 px-2.5 py-1 rounded-full border border-brand/20">
+            {{ selectedPackage() }}
+          </span>
+          <h3 class="text-xl font-black mt-3">Εκδήλωση Ενδιαφέροντος</h3>
+          <p class="text-xs text-main/70 mt-1 font-medium">
+            Συμπληρώστε τα στοιχεία σας και θα επικοινωνήσουμε μαζί σας για προσφορά.
+          </p>
+        </div>
+
+        <form (submit)="handleLeadSubmit($event)" class="space-y-4">
+          <div>
+            <label class="text-xs font-bold text-main/80 block mb-1">Όνομα / Επιχείρηση *</label>
+            <input 
+              type="text" 
+              [(ngModel)]="leadData.name" 
+              name="name" 
+              placeholder="π.χ. Γιώργος - Coffee Corner" 
+              required 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base border border-theme-border text-xs font-medium focus:outline-none focus:border-brand" />
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-main/80 block mb-1">Τηλέφωνο *</label>
+            <input 
+              type="tel" 
+              [(ngModel)]="leadData.phone" 
+              name="phone" 
+              placeholder="69XXXXXXXX" 
+              required 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base border border-theme-border text-xs font-medium focus:outline-none focus:border-brand" />
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-main/80 block mb-1">Email *</label>
+            <input 
+              type="email" 
+              [(ngModel)]="leadData.email" 
+              name="email" 
+              placeholder="name@example.com" 
+              required 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base border border-theme-border text-xs font-medium focus:outline-none focus:border-brand" />
+          </div>
+
+          <div>
+            <label class="text-xs font-bold text-main/80 block mb-1">Μήνυμα / Σημειώσεις</label>
+            <textarea 
+              [(ngModel)]="leadData.message" 
+              name="message" 
+              placeholder="Πείτε μας λίγα λόγια για το κατάστημά σας..." 
+              rows="3" 
+              class="w-full px-3.5 py-2.5 rounded-xl bg-base border border-theme-border text-xs font-medium focus:outline-none focus:border-brand resize-none"></textarea>
+          </div>
+
+          <button 
+            type="submit" 
+            [disabled]="isSubmitting()" 
+            class="w-full py-3.5 rounded-2xl bg-brand text-white font-bold text-xs hover:bg-brand/90 transition-all shadow-lg flex items-center justify-center gap-2 disabled:opacity-50">
+            @if (isSubmitting()) {
+              <span>Αποστολή...</span>
+            } @else {
+              <span>🚀 Αποστολή & Εκδήλωση Ενδιαφέροντος</span>
+            }
+          </button>
+        </form>
+      } @else {
+        <!-- Success State -->
+        <div class="text-center py-6">
+          <div class="text-4xl mb-3">🎉</div>
+          <h3 class="text-lg font-black mb-2">Η αίτησή σας καταχωρήθηκε!</h3>
+          <p class="text-xs text-main/70 mb-6 font-medium">
+            Ευχαριστούμε για το ενδιαφέρον. Θα επικοινωνήσουμε σύντομα μαζί σας!
+          </p>
+          <button 
+            (click)="closeLeadModal()" 
+            class="px-6 py-2.5 rounded-xl bg-base border border-theme-border font-bold text-xs hover:bg-brand hover:text-white transition-all">
+            Κλείσιμο
+          </button>
+        </div>
+      }
+
+    </div>
+  </div>
+}
