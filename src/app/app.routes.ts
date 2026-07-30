@@ -15,5 +15,6 @@ export const routes: Routes = [
   { path: 'dashboard', component: DashboardComponent },
   { path: 'settings', component: SettingsComponent },
   { path: 'team', component: TeamComponent },
-  { path: 'costumers', component: CustomersComponent }
+  { path: 'costumers', component: CustomersComponent },
+  { path: 'landing', loadComponent: () => import('./landing/landing.component').then(m => m.LandingComponent) }
 ];
