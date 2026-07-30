@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LogoComponent } from './shared/logo/logo.component'
+import { LogoComponent } from './shared/logo/logo.component';
 
 @Component({
   selector: 'app-root',
@@ -10,14 +10,14 @@ import { LogoComponent } from './shared/logo/logo.component'
   templateUrl: './app.component.html'
 })
 export class AppComponent {
-  // Tracks the state of the mobile hamburger menu
+  /** Tracks the state of the mobile hamburger menu */
   public isMobileMenuOpen = signal(false);
 
-  public toggleMenu() {
+  public toggleMenu(): void {
     this.isMobileMenuOpen.update(val => !val);
   }
 
-  public closeMenu() {
+  public closeMenu(): void {
     this.isMobileMenuOpen.set(false);
   }
 }
